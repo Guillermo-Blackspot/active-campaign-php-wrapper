@@ -1,0 +1,22 @@
+{
+    "name": "blackspot/active-campaign-php-wrapper",
+    "type": "library",
+    "description": "Active campaign wrapper for php",
+    "license": "MIT",
+    "autoload": {        
+        "psr-4": {
+            "BlackSpot\\ActiveCampaign\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Guillermo Rodriguez",
+            "email": "guillermo.blackspot@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.3",
+        "guzzlehttp/guzzle": "^7.5"
+    }
+}
