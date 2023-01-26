@@ -14,8 +14,6 @@ class ActiveCampaign
     public $lastUrl;
     private $constructorApiToken = null;
 
-    private const RESPONSE_OK = 200;
-
     public function __construct($apiToken = null)
     {
         if ($apiToken !== null) {
@@ -85,7 +83,23 @@ class ActiveCampaign
     {
         return new self($apiToken);
     }
+
+    private function responseIsSuccess($response)
+    {
+        $statusCode = $response->getStatus();
+        return $statusCode == 200 || $statusCode == 201;
+    }
+
+    private function responseFails($response)
+    {        
+        return $response->getStatus() >= 400;
+    }
     
+    private function responseArray($response)
+    {
+        return json_decode($response->getBody()->getContents(), true);
+    }
+
     public function throwIfEnabled($response, $returnsBoolean = false)
     {
         if ($response == false) {
@@ -94,7 +108,7 @@ class ActiveCampaign
             }else{
                 throw new Exception('[Active Campaign] : Something was wrong', 1);
             }
-        }else if ($response->getStatusCode() != self::RESPONSE_OK) {
+        }else if ($this->responseFails($response)) {
             if ($returnsBoolean) {
                 return false;
             }else{
@@ -115,8 +129,7 @@ class ActiveCampaign
     }
 
     private function apiRequestor($method, $url, $data = [], $returnsBoolean = false)
-    {
-        
+    {        
         $guzzleHttp = new \GuzzleHttp\Client([
             'base_uri' => static::$apiUrl,
             'headers'  => [
@@ -133,12 +146,12 @@ class ActiveCampaign
         if ($this->throwIfEnabled($response, $returnsBoolean) == false) {
             return false;
         }
-                
+         
         if ($returnsBoolean) {
-            return $response->getStatusCode() == self::RESPONSE_OK;            
+            return $this->responseIsSuccess($response);
         }
     
-        return json_decode($response->getBody()->getContents(), true);
+        return $this->responseArray($response);
     }
 
     private function buildData($method, $data = [])
