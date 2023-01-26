@@ -86,13 +86,13 @@ class ActiveCampaign
 
     private function responseIsSuccess($response)
     {
-        $statusCode = $response->getStatus();
+        $statusCode = $response->getStatusCode();
         return $statusCode == 200 || $statusCode == 201;
     }
 
     private function responseFails($response)
     {        
-        return $response->getStatus() >= 400;
+        return $response->getStatusCode() >= 400;
     }
     
     private function responseArray($response)
